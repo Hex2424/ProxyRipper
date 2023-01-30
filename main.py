@@ -1,0 +1,4 @@
+import scrap
+
+
+scrap.runScraping()
