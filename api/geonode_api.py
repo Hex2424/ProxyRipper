@@ -41,3 +41,6 @@ class APIGeonode(ProxyEngine):
             ))
         
         return self.proxy_list
+
+    def getCurrentApiName(self):
+        return ENDPOINT

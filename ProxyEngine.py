@@ -97,6 +97,11 @@ class ProxyEngine:
 
         return latencystatus
 
+    def getCurrentApiName(self):
+        """
+        Name tag of current scrapping api service
+        """
+        return ''
 
 class ProxyInfo:
 

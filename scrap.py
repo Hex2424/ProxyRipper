@@ -6,17 +6,19 @@ import threading
 import time
 import printer
 import os
+import signal
 
 
 MAX_THREAD_POOL_SIZE = 10
 PROXY_TIMEOUT = 2
 PROXY_RECHECK_TIMEOUT = 3
 
-ATTEMPTS_ON_FAILURE = 3
+ATTEMPTS_ON_FAILURE = 2
 PROTOCOL_FILTER = [Protocol.SOCKS5]
 
 currentThreadCount = 0
-threadLock = False
+threadLock = threading.Lock()
+RUN_PROGRAM = True
 
 proxyScrappersList = [
     APIGeonode()
@@ -24,17 +26,30 @@ proxyScrappersList = [
 
 validProxies = {}
 
+
+
+currentAPIURL = ""
+currentAPICountItems = 0
+currentAPIItemsChecked = 0
+
 def checkValidity(proxyList):
     global currentThreadCount
+    global currentAPIItemsChecked
+    global currentAPICountItems
+
+    currentAPIItemsChecked = 0
+    currentAPICountItems = len(proxyList)
 
     for proxyObject in proxyList:
 
         while(currentThreadCount > (MAX_THREAD_POOL_SIZE - 1)):
             time.sleep(0.1)
+            if not RUN_PROGRAM:
+                return
             pass
-
+        
         threading.Thread(target=proxycheck.check_proxy, args=[proxyObject, PROXY_TIMEOUT, ATTEMPTS_ON_FAILURE, proxyCheckCallback, True]).start()
-
+        currentAPIItemsChecked += 1
         currentThreadCount += 1
 
 
@@ -51,10 +66,9 @@ def proxyCheckCallback(object):
     #     return
     # print("Sss")
     # saveProxy(object)
-    while threadLock:
-        pass
+    with threadLock:
+        validProxies[f"{object.ip}:{object.port}"] = object
 
-    validProxies[f"{object.ip}:{object.port}"] = object
     currentThreadCount -= 1
 
 def saveProxy(object):
@@ -71,46 +85,49 @@ def passesFilters(object):
 
 
 def cleanerThread():
-    global threadLock
-    
-    while True:
-        while threadLock:
-            pass
+    pass
+    # global threadLock
 
-        threadLock = True
-        for key, value in validProxies.items():
-            if(proxycheck.check_proxy(value, PROXY_RECHECK_TIMEOUT, ATTEMPTS_ON_FAILURE, None)) == None:
-                del validProxies[key]
-        threadLock = False
+    # while True:
+        
+    #     to_delete = []
+    #     for key, value in validProxies.items():
+    #         if(proxycheck.check_proxy(value, PROXY_RECHECK_TIMEOUT, ATTEMPTS_ON_FAILURE, None, False)) == None:
+    #             to_delete.append(key)
+        
+    #     with threadLock:
+    #         for key in to_delete:
+    #             pass
+    #             # print(key)
+    #             # del validProxies[key]
+    #     time.sleep(3)
+    # pass
 
 def printingThread():
     global threadLock
 
-    while True:
+    while RUN_PROGRAM:
         os.system('clear')
-        while threadLock:
-            pass
-
-        threadLock = True
-        
-        for key, value in sorted(validProxies.items(), key=lambda x: x[1].latency):
-            printer.printProxyInfo(value)
+        printer.printCurrentApi(currentAPIURL, currentAPIItemsChecked, currentAPICountItems)
+        with threadLock:
+            for key, value in sorted(validProxies.items(), key=lambda x: x[1].latency):
+                printer.printProxyInfo(value)
         time.sleep(3)
-
-        threadLock = False
     
 
 def runScraping():
+    global currentAPIURL
 
-    threading.Thread(target=printingThread, args=[]).start()    # establishing printing threads
+    threading.Thread(target=printingThread, args=[]).start()
     threading.Thread(target=cleanerThread, args=[]).start()
+
 
     with open("cache.json", 'w') as file:
         file.write('')
 
     for proxyScrapper in proxyScrappersList:
         proxyScrapper.setup()
-
+        currentAPIURL = proxyScrapper.getCurrentApiName()
         proxy_list = proxyScrapper.scrape()
 
         if proxy_list == None:
@@ -118,3 +135,11 @@ def runScraping():
             continue
 
         checkValidity(proxy_list)
+
+
+def handle_ctrl_c(signal, frame):
+    RUN_PROGRAM = False
+    # cleanup process here
+    exit(0)
+
+signal.signal(signal.SIGINT, handle_ctrl_c)
