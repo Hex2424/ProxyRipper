@@ -4,7 +4,7 @@ from ProxyEngine import ProxyEngine, Protocol
 from threading import Thread
 import time
 
-def check_proxy(object, timeout, attempts, callback, isAync=False):
+def check_proxy(object, timeout, attempts, callback, isAsync=False):
 
     STATUS = None
     for _ in range(attempts):
@@ -19,12 +19,11 @@ def check_proxy(object, timeout, attempts, callback, isAync=False):
                 if (response.status_code == 200):
                     object.setLatency(round(response.elapsed.microseconds / 1000))
 
-                    STATUS = object
-                    if isAync:
-                        callback(STATUS)
+                    if isAsync:
+                        callback(object)
                         return
                     else:
-                        return STATUS
+                        return object
                 else:
                     STATUS = None
             except requests.exceptions.ConnectTimeout:
@@ -34,7 +33,7 @@ def check_proxy(object, timeout, attempts, callback, isAync=False):
             except Exception:
                 STATUS = None
         # print("checked")
-    if isAync:
+    if isAsync:
         callback(STATUS)
         return
     else:
