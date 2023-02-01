@@ -20,6 +20,9 @@ PORT_COLOR = DEFAULT_COLOR
 ANONYMITY_COLOR = OKCYAN
 COUNTRY_COLOR = PURPLE
 
+API_ETA_COLOR = OKCYAN
+API_NAME_COLOR = OKGREEN
+
 LATENCY_GOOD = OKGREEN 
 LATENCY_VERYGOOD = OKGREEN
 LATENCY_MEDIUM = WARNING
@@ -108,3 +111,6 @@ def printAnonymity(anonimity):
 def printCountry(country):
     print(f"{DEFAULT_COLOR}[{COUNTRY_COLOR}{country}{DEFAULT_COLOR}]", end=SEPERATOR)
     
+
+def printCurrentApi(name, scrapped, max):
+    print(f"{DEFAULT_COLOR}[{API_ETA_COLOR}>>{DEFAULT_COLOR}][{API_NAME_COLOR}{name}{DEFAULT_COLOR}][{API_ETA_COLOR} {scrapped} / {max}{DEFAULT_COLOR} ]\n")
