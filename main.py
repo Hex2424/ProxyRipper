@@ -1,4 +1,0 @@
-import scrap
-
-
-scrap.runScraping()

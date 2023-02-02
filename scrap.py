@@ -1,6 +1,7 @@
 from ProxyEngine import *
 from api.geonode_api import APIGeonode
 from api.cache_api import APICache
+import validators
 
 import proxycheck
 import threading
@@ -11,13 +12,13 @@ import signal
 import json
 
 
-MAX_THREAD_POOL_SIZE = 10
+MAX_THREAD_POOL_SIZE = None
+PROXY_TIMEOUT = None
+ATTEMPTS_ON_FAILURE = None
+DISABLE_CACHE = None
+CHECK_URL = None
 
 
-PROXY_TIMEOUT = 2
-PROXY_RECHECK_TIMEOUT = 3
-
-ATTEMPTS_ON_FAILURE = 2
 PROTOCOL_FILTER = [Protocol.SOCKS5]
 
 currentThreadCount = 0
@@ -137,7 +138,47 @@ def printingThread():
         time.sleep(3)
     
 
-def runScraping():
+def initializeArgs(args):
+    global MAX_THREAD_POOL_SIZE
+    global PROXY_TIMEOUT
+    global ATTEMPTS_ON_FAILURE 
+    global DISABLE_CACHE
+    global CHECK_URL
+
+    MAX_THREAD_POOL_SIZE = args.threads
+    PROXY_TIMEOUT = args.timeout
+    ATTEMPTS_ON_FAILURE = args.attempts
+    DISABLE_CACHE = args.disable_cache
+    CHECK_URL = args.check_url
+
+    if not validators.url(CHECK_URL):
+        print(f"URL:\"{CHECK_URL}\" is not seem like a URL")
+        return False
+
+    if MAX_THREAD_POOL_SIZE > 100:
+        print("Thread count too big, your pc will crash")
+        return False
+
+    if MAX_THREAD_POOL_SIZE < 1:
+        print("There must be atleast 1 thread running, threads doesn't count as negative either")
+        return False
+
+    if ATTEMPTS_ON_FAILURE > 50:
+        print("I am sure you don't need such attempts count")
+        return False 
+
+    if ATTEMPTS_ON_FAILURE < 1:
+        print("Need atleast have 1 attempt to validate proxy")
+        return False
+
+    return True
+
+
+def runScraping(args):
+    if not initializeArgs(args):
+        print("Exiting app")
+        exit(0)
+    
     global currentAPIURL
 
     threading.Thread(target=printingThread, args=[]).start()

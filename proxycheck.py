@@ -1,8 +1,6 @@
-import sys
 import requests
 from ProxyEngine import ProxyEngine, Protocol
 from threading import Thread
-import time
 
 def check_proxy(object, timeout, attempts, callback, isAsync=False):
 
