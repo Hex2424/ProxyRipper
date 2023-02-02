@@ -1,4 +1,4 @@
-import scrap
+import utils.scrap as scrap
 import argparse
 
 

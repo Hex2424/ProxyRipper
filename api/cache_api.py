@@ -1,4 +1,4 @@
-from ProxyEngine import *
+from utils.ProxyEngine import ProxyEngine, ProxyInfo
 import json
 
 CACHE_PATH = "cache.json"

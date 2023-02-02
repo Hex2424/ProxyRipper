@@ -1,5 +1,5 @@
 import requests
-from ProxyEngine import ProxyEngine, Protocol
+from utils.ProxyEngine import ProxyEngine, Protocol
 from threading import Thread
 
 def check_proxy(object, timeout, attempts, callback, isAsync=False):

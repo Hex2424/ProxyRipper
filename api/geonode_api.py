@@ -1,4 +1,4 @@
-from ProxyEngine import *
+from utils.ProxyEngine import ProxyEngine, ProxyInfo
 import requests
 
 PAGE_LIMIT = 500
