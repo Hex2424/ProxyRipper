@@ -24,10 +24,10 @@ class APIGeonode(ProxyEngine):
         try:
             response = requests.get(ENDPOINT, params=PARAMS, timeout=10)
         except Exception:
-            return None
+            return []
             
         if response.status_code != 200:
-            return None
+            return []
 
         json_responses = response.json()["data"]
 
