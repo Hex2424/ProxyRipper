@@ -1,4 +1,4 @@
-from utils.ProxyEngine import ProxyEngine, ProxyInfo
+from ..ProxyEngine import ProxyEngine, ProxyInfo
 import requests
 
 PAGE_LIMIT = 500
@@ -9,6 +9,7 @@ PARAMS = {
     "sort_by" : "lastChecked",
     "sort_type" : "desc"
 }
+
 
 
 

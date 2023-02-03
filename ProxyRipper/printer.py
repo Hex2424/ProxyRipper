@@ -1,4 +1,4 @@
-from utils.ProxyEngine import *
+from .ProxyEngine import *
 
 HEADER = '\033[95m'
 OKBLUE = '\033[94m'

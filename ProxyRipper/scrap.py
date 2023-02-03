@@ -1,14 +1,14 @@
-from utils.ProxyEngine import ProxyEngine, Protocol, ProxyInfo
+from .ProxyEngine import ProxyEngine, Protocol, ProxyInfo
 
 
-from api.geonode_api import APIGeonode
-from api.cache_api import APICache
+from .api.geonode_api import APIGeonode
+from .api.cache_api import APICache
 import validators
 
-import utils.proxycheck as proxycheck
+from . import proxycheck
 import threading
 import time
-import utils.printer as printer
+from . import printer
 import os
 import signal
 import json
