@@ -1,4 +1,4 @@
-from . import scrap
+import scrap
 import argparse
 
 def main():
@@ -54,19 +54,28 @@ def main():
         default=10,
         type=int)
 
-    # No argument option for disabling proxy caching
+    # Argument for setting default test url
     parser.add_argument("--check-url", "-u", 
         help="URL API for testing response to determine proxy validity (default : https://www.myip.com)",
         default="https://www.myip.com",
         type=str)
+    
+    # Running tests
+    parser.add_argument("--test", 
+        help="performs tests on proxy sources and check url connectivity",
+        action='store_true')
 
-    # No argument option for disabling proxy caching
-    parser.add_argument('--version', action='version', version='%(prog)s 1.4')
+    # Shows current version
+    parser.add_argument('--version', action='version', version='%(prog)s 1.1.4')
 
     args = parser.parse_args()
 
+    if args.test:
+        scrap.runTests(args)
+    else:
+        scrap.runScraping(args)
 
-    scrap.runScraping(args)
+
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,4 @@
-from .ProxyEngine import *
+import ProxyEngine
 
 HEADER = '\033[95m'
 OKBLUE = '\033[94m'
@@ -19,6 +19,7 @@ IP_COLOR = DEFAULT_COLOR
 PORT_COLOR = DEFAULT_COLOR
 ANONYMITY_COLOR = OKCYAN
 COUNTRY_COLOR = PURPLE
+NEW_PARAGRAPH_COLOR = PURPLE
 
 API_ETA_COLOR = OKCYAN
 API_NAME_COLOR = OKGREEN
@@ -52,20 +53,20 @@ def printProtocols(protocolBitmap):
 
     print(f"{DEFAULT_COLOR}[{PROTOCOL_COLOR}", end='')
 
-    if ProxyEngine.checkProtocolExistence(protocolBitmap, Protocol.SOCKS5):
-        print(Protocol.SOCKS5.name, end='')
+    if ProxyEngine.ProxyEngine.checkProtocolExistence(protocolBitmap, ProxyEngine.Protocol.SOCKS5):
+        print(ProxyEngine.Protocol.SOCKS5.name, end='')
 
-    elif ProxyEngine.checkProtocolExistence(protocolBitmap, Protocol.SOCKS4):
-        print(Protocol.SOCKS4.name, end='')
+    elif ProxyEngine.ProxyEngine.checkProtocolExistence(protocolBitmap, ProxyEngine.Protocol.SOCKS4):
+        print(ProxyEngine.Protocol.SOCKS4.name, end='')
 
-    elif ProxyEngine.checkProtocolExistence(protocolBitmap, Protocol.HTTP):
-        print(f"{Protocol.HTTP.name}  ", end='')
+    elif ProxyEngine.ProxyEngine.checkProtocolExistence(protocolBitmap, ProxyEngine.Protocol.HTTP):
+        print(f"{ProxyEngine.Protocol.HTTP.name}  ", end='')
 
-    elif ProxyEngine.checkProtocolExistence(protocolBitmap, Protocol.HTTPS):
-        print(f"{Protocol.HTTPS.name} ", end='')
+    elif ProxyEngine.ProxyEngine.checkProtocolExistence(protocolBitmap, ProxyEngine.Protocol.HTTPS):
+        print(f"{ProxyEngine.Protocol.HTTPS.name} ", end='')
 
     else:
-        print(Protocol.UNKNOWN.name, end='')
+        print(ProxyEngine.Protocol.UNKNOWN.name, end='')
 
     print(f"{DEFAULT_COLOR}]", end=SEPERATOR)
 
@@ -77,16 +78,16 @@ def printLatency(latency):
 
     print(f"{DEFAULT_COLOR}[", end='')
     
-    if(ProxyEngine.getLatencyStatus(latency) == LatencyStatus.VERY_GOOD):
+    if(ProxyEngine.ProxyEngine.getLatencyStatus(latency) == ProxyEngine.LatencyStatus.VERY_GOOD):
         print(LATENCY_VERYGOOD, end='')
 
-    elif(ProxyEngine.getLatencyStatus(latency) == LatencyStatus.GOOD):
+    elif(ProxyEngine.ProxyEngine.getLatencyStatus(latency) == ProxyEngine.LatencyStatus.GOOD):
         print(LATENCY_GOOD, end='')
 
-    elif(ProxyEngine.getLatencyStatus(latency) == LatencyStatus.MEDIUM):
+    elif(ProxyEngine.ProxyEngine.getLatencyStatus(latency) == ProxyEngine.LatencyStatus.MEDIUM):
         print(LATENCY_MEDIUM, end='')
 
-    elif(ProxyEngine.getLatencyStatus(latency) == LatencyStatus.BAD):
+    elif(ProxyEngine.ProxyEngine.getLatencyStatus(latency) == ProxyEngine.LatencyStatus.BAD):
         print(LATENCY_BAD, end='')
     print(f"{latency}ms{DEFAULT_COLOR}]", end=SEPERATOR)
 
@@ -94,13 +95,13 @@ def printAnonymity(anonimity):
 
     print(f"{DEFAULT_COLOR}[{ANONYMITY_COLOR}", end='')
     
-    if anonimity == AnonymityLevel.HIGH:
+    if anonimity == ProxyEngine.AnonymityLevel.HIGH:
         print(ANONYMITY_HIGH_CHAR, end='')
         
-    elif anonimity == AnonymityLevel.MEDIUM:
+    elif anonimity == ProxyEngine.AnonymityLevel.MEDIUM:
         print(ANONYMITY_MEDIUM_CHAR, end='')
 
-    elif anonimity == AnonymityLevel.LOW:
+    elif anonimity == ProxyEngine.AnonymityLevel.LOW:
         print(ANONYMITY_LOW_CHAR, end='')
     
     else:
@@ -114,3 +115,19 @@ def printCountry(country):
 
 def printCurrentApi(name, scrapped, max):
     print(f"{DEFAULT_COLOR}[{API_ETA_COLOR}>>{DEFAULT_COLOR}][{API_NAME_COLOR}{name}{DEFAULT_COLOR}][{API_ETA_COLOR} {scrapped} / {max}{DEFAULT_COLOR} ]\n")
+
+def printUrlCheck(url, proxyCount, passed, inprogress):
+    print(f"{DEFAULT_COLOR}[{API_ETA_COLOR}>>{DEFAULT_COLOR}][{API_NAME_COLOR}{url}{DEFAULT_COLOR}][{API_ETA_COLOR} {proxyCount} {DEFAULT_COLOR}][", end='')
+    if inprogress:
+        print(f"{API_ETA_COLOR}CHECK{DEFAULT_COLOR}]", end=SEPERATOR)
+    else:
+        if passed:
+            print(f"{LATENCY_GOOD}PASS{DEFAULT_COLOR}]       ", end=SEPERATOR) 
+        else:
+            print(f"{LATENCY_BAD}FAIL{DEFAULT_COLOR}]        ", end=SEPERATOR)
+
+def replaceLine():
+    print(end='\r')
+
+def newParagraph(name):
+    print(f"\n\n[ {NEW_PARAGRAPH_COLOR}{name}{DEFAULT_COLOR} ]:\n")

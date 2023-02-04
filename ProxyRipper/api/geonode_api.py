@@ -1,4 +1,4 @@
-from ..ProxyEngine import ProxyEngine, ProxyInfo
+import ProxyEngine
 import requests
 
 PAGE_LIMIT = 500
@@ -13,7 +13,7 @@ PARAMS = {
 
 
 
-class APIGeonode(ProxyEngine):
+class APIGeonode(ProxyEngine.ProxyEngine):
 
     def setup(self):
         self.proxy_list = []
@@ -33,7 +33,7 @@ class APIGeonode(ProxyEngine):
         json_responses = response.json()["data"]
 
         for proxy_info in json_responses:
-            self.proxy_list.append(ProxyInfo(
+            self.proxy_list.append(ProxyEngine.ProxyInfo(
                 proxy_info["ip"],
                 proxy_info["port"],
                 proxy_info["country"],

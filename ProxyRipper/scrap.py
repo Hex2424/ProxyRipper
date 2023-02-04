@@ -1,14 +1,14 @@
-from .ProxyEngine import ProxyEngine, Protocol, ProxyInfo
+import ProxyEngine
 
 
-from .api.geonode_api import APIGeonode
-from .api.cache_api import APICache
+import api.geonode_api as APIGeonode
+import api.cache_api as APICache
 import validators
 
-from . import proxycheck
+import proxycheck
 import threading
 import time
-from . import printer
+import printer
 import os
 import signal
 import json
@@ -21,16 +21,18 @@ DISABLE_CACHE = None
 CHECK_URL = None
 
 
-PROTOCOL_FILTER = [Protocol.SOCKS5]
+PROTOCOL_FILTER = [ProxyEngine.Protocol.SOCKS5]
 
 currentThreadCount = 0
 
 threadLock = threading.Lock()
 RUN_PROGRAM = True
 
+cache = APICache.APICache()
+
 proxyScrappersList = [
-    APICache(),
-    APIGeonode()
+    cache,
+    APIGeonode.APIGeonode()
 ]
 
 validProxies = {}
@@ -106,7 +108,7 @@ def cacheProxies():
 
 def passesFilters(object):
     for protocolFilter in PROTOCOL_FILTER:
-        if(ProxyEngine.checkProtocolExistence(object.protocol, protocolFilter)):
+        if(ProxyEngine.ProxyEngine.checkProtocolExistence(object.protocol, protocolFilter)):
             return True                                         # found atleast one matching protocol
     return False                                                # not found any matching protocols
 
@@ -176,6 +178,7 @@ def initializeArgs(args):
     return True
 
 
+
 def runScraping(args):
     if not initializeArgs(args):
         print("Exiting app")
@@ -199,6 +202,47 @@ def runScraping(args):
 
     exitApp()
 
+def runTests(args):
+    if not initializeArgs(args):
+        print("Exiting app")
+        exit(0)
+    overallProxyCount = 0
+    printer.newParagraph("CHECK URL VALIDATION")
+    printer.printUrlCheck(CHECK_URL, 0, False, True)
+    printer.replaceLine()
+    status = proxycheck.checkUrl(CHECK_URL, PROXY_TIMEOUT)
+
+    if status == 200:
+        printer.printUrlCheck(CHECK_URL, 0, True, False)
+    else:
+        printer.printUrlCheck(CHECK_URL, 0, False, False)
+    printer.newParagraph("ENDPOINT CHECK")
+
+    proxyScrappersList.remove(cache)
+
+    for proxyScrapper in proxyScrappersList:
+        proxyScrapper.setup()
+        printer.printUrlCheck(proxyScrapper.getCurrentApiName(), 0, False, True)
+        printer.replaceLine()
+        proxy_list = proxyScrapper.scrape()
+
+        overallProxyCount += len(proxy_list)
+
+        if proxy_list == []:
+            printer.printUrlCheck(proxyScrapper.getCurrentApiName(), 0, False, False)
+        else:
+            printer.printUrlCheck(proxyScrapper.getCurrentApiName(), len(proxy_list), True, False)
+
+        print()
+
+    printer.newParagraph("OVERALL RESULT")
+
+    if overallProxyCount > 0:
+        printer.printUrlCheck("ALL ENDPOINTS PROXY COUNT", overallProxyCount, True, False)
+    else:
+        printer.printUrlCheck("ALL ENDPOINTS PROXY COUNT", overallProxyCount, False, False)
+    print()
+    print()
 
 def handle_ctrl_c(signal, frame):
     RUN_PROGRAM = False

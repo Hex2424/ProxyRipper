@@ -1,9 +1,9 @@
-from ..ProxyEngine import ProxyEngine, ProxyInfo
+import ProxyEngine
 import json
 
 CACHE_PATH = "cache.json"
 
-class APICache(ProxyEngine):
+class APICache(ProxyEngine.ProxyEngine):
 
     def setup(self):
         self.proxy_list = []
@@ -18,7 +18,7 @@ class APICache(ProxyEngine):
             return []
 
         for dictionaryItem in dictionary:
-            self.proxy_list.append(ProxyInfo(
+            self.proxy_list.append(ProxyEngine.ProxyInfo(
                 dictionaryItem["ip"],
                 dictionaryItem["port"],
                 dictionaryItem["country"],

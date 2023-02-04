@@ -1,5 +1,5 @@
 import requests
-from .ProxyEngine import ProxyEngine, Protocol
+import ProxyEngine
 from threading import Thread
 
 def check_proxy(object, timeout, attempts, callback, isAsync=False):
@@ -37,19 +37,25 @@ def check_proxy(object, timeout, attempts, callback, isAsync=False):
     else:
         return STATUS
 
+def checkUrl(url, timeout):
+    try:
+        return requests.get(url, timeout=timeout).status_code
+    except Exception:
+        return 404
+
 def getProtocolsList(bitmap):
     protocols = []
 
-    if ProxyEngine.checkProtocolExistence(bitmap, Protocol.SOCKS5):
+    if ProxyEngine.ProxyEngine.checkProtocolExistence(bitmap, ProxyEngine.Protocol.SOCKS5):
         protocols.append('socks5')
 
-    elif ProxyEngine.checkProtocolExistence(bitmap, Protocol.SOCKS4):
+    elif ProxyEngine.ProxyEngine.checkProtocolExistence(bitmap, ProxyEngine.Protocol.SOCKS4):
         protocols.append('socks4')
 
-    elif ProxyEngine.checkProtocolExistence(bitmap, Protocol.HTTP):
+    elif ProxyEngine.ProxyEngine.checkProtocolExistence(bitmap, ProxyEngine.Protocol.HTTP):
         protocols.append('http')
 
-    elif ProxyEngine.checkProtocolExistence(bitmap, Protocol.HTTPS):
+    elif ProxyEngine.ProxyEngine.checkProtocolExistence(bitmap, ProxyEngine.Protocol.HTTPS):
         protocols.append('https')
 
     return protocols
