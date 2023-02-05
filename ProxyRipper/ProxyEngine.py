@@ -40,7 +40,7 @@ class ProxyEngine:
         """
         Function which decided from anonimity keywords ENUM, defaults setted here
         """
-
+ 
         if anonimityString == "elite":
             return AnonymityLevel.HIGH
 

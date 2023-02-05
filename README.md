@@ -124,7 +124,7 @@ By default tool caches last session working proxies, and firstly checking them, 
 ```sh
 ProxyRipper --disable-cache
 ```
-Tool uses python requests module for checking if proxy do a job properly, by default it tries reach https://myip.com, you can change default checking url by this option.
+Tool uses python requests module for checking if proxy do a job properly, by default it tries reach https://www.google.com, you can change default checking url by this option.
 ```sh
 ProxyRipper --check-url https://www.example.com
 ```

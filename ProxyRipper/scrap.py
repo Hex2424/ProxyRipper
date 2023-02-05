@@ -1,8 +1,11 @@
 import ProxyEngine
 
 
-import api.geonode_api as APIGeonode
-import api.cache_api as APICache
+import api.geonode_api as api_geonode
+import api.cache_api as api_cache
+import api.free_proxy_list as api_free_proxy_list
+import api.proxyscrape as api_proxyscrape
+
 import validators
 
 import proxycheck
@@ -28,11 +31,15 @@ currentThreadCount = 0
 threadLock = threading.Lock()
 RUN_PROGRAM = True
 
-cache = APICache.APICache()
+cache = api_cache.APICache()
 
+
+# TODO priority listing
 proxyScrappersList = [
     cache,
-    APIGeonode.APIGeonode()
+    api_geonode.APIGeonode(),
+    api_free_proxy_list.APIFreeProxyList(),
+    api_proxyscrape.APIProxyScrape()
 ]
 
 validProxies = {}
@@ -59,7 +66,7 @@ def checkValidity(proxyList):
                 return
             pass
         
-        threading.Thread(target=proxycheck.check_proxy, args=[proxyObject, PROXY_TIMEOUT, ATTEMPTS_ON_FAILURE, proxyCheckCallback, True]).start()
+        threading.Thread(target=proxycheck.check_proxy, args=[proxyObject,CHECK_URL, PROXY_TIMEOUT, ATTEMPTS_ON_FAILURE, proxyCheckCallback, True]).start()
         currentAPIItemsChecked += 1
         currentThreadCount += 1
 

@@ -33,8 +33,8 @@ def main():
 
     # Proxy Attempts argument settings
     parser.add_argument("--attempts","-a", 
-        help="Retries for proxy connection, until it considered failed (default : 4)",
-        default=4,
+        help="Retries for proxy connection, until it considered failed (default : 1)",
+        default=1,
         type=int)
 
     # Proxy Time for timeout argument settings
@@ -56,8 +56,8 @@ def main():
 
     # Argument for setting default test url
     parser.add_argument("--check-url", "-u", 
-        help="URL API for testing response to determine proxy validity (default : https://www.myip.com)",
-        default="https://www.myip.com",
+        help="URL API for testing response to determine proxy validity (default : https://www.google.com)",
+        default="https://www.google.com",
         type=str)
     
     # Running tests
