@@ -6,7 +6,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
@@ -182,10 +181,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-* Markas Vielavičius - markas.vielavicius@gmail.com
 * Discord - Hex24#8712
-
-Project Link: [https://github.com/Hex2424/ProxyRipper](https://github.com/Hex2424/ProxyRipper)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
